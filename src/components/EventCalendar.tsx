@@ -29,7 +29,7 @@ const events = [
   },
 ];
 
-const EventCalender = () => {
+const EventCalendar = () => {
 
   const [value, onChange] = useState<Value>(new Date());
 
@@ -59,4 +59,4 @@ const EventCalender = () => {
   )
 }
 
-export default EventCalender
+export default EventCalendar
