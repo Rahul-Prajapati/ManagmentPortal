@@ -1,7 +1,8 @@
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, eventsData} from "@/lib/data";
+import { role, eventsData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,38 +14,38 @@ type Event = {
     date: string;
     startTime: string;
     endTime: string;
-  };
-  
-  const columns = [
+};
+
+const columns = [
     {
-      header: "Title",
-      accessor: "title",
+        header: "Title",
+        accessor: "title",
     },
     {
-      header: "Class",
-      accessor: "class",
+        header: "Class",
+        accessor: "class",
     },
     {
-      header: "Date",
-      accessor: "date",
-      className: "hidden md:table-cell",
+        header: "Date",
+        accessor: "date",
+        className: "hidden md:table-cell",
     },
     {
-      header: "Start Time",
-      accessor: "startTime",
-      className: "hidden md:table-cell",
+        header: "Start Time",
+        accessor: "startTime",
+        className: "hidden md:table-cell",
     },
     {
-      header: "End Time",
-      accessor: "endTime",
-      className: "hidden md:table-cell",
+        header: "End Time",
+        accessor: "endTime",
+        className: "hidden md:table-cell",
     },
     {
-      header: "Actions",
-      accessor: "action",
+        header: "Actions",
+        accessor: "action",
     },
-  ];
-  
+];
+
 
 const EventsListpage = () => {
 
@@ -62,15 +63,11 @@ const EventsListpage = () => {
             <td className="hidden md:table-cell">{item.endTime}</td>
             <td>
                 <div className="flex items-center gap-2">
-                    <Link href={`/list/teachers/${item.id}`}>
-                        <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Purple">
-                            <Image src="/edit.png" alt="" width={16} height={16} />
-                        </button>
-                    </Link>
                     {role === "admin" && (
-                        <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Purple">
-                            <Image src="/delete.png" alt="" width={16} height={16} />
-                        </button>
+                        <>
+                            <FormModal table="event" type="update" data={item} />
+                            <FormModal table="event" type="delete" id={item.id} />
+                        </>
                     )}
                 </div>
             </td>
@@ -92,9 +89,8 @@ const EventsListpage = () => {
                             <Image src="/sort.png" alt="" width={14} height={14} />
                         </button>
                         {role === "admin" && (
-                            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-                                <Image src="/plus.png" alt="" width={14} height={14} />
-                            </button>
+                            
+                            <FormModal table="event" type="create" />
 
                         )}
                     </div>
