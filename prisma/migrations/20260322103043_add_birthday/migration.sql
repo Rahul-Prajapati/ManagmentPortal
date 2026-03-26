@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Parent" ALTER COLUMN "sex" DROP NOT NULL;
