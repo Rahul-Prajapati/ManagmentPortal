@@ -122,19 +122,19 @@ const SingleStudentPage = () => {
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-            <Link className="p-3 rounded-md bg-SkyLight" href="/">
+            <Link className="p-3 rounded-md bg-SkyLight" href={`/dashboard/list/lessons?classId=${2}`}>
               Student&apos;s Lessons
             </Link>
-            <Link className="p-3 rounded-md bg-PurpleLight" href="/">
+            <Link className="p-3 rounded-md bg-PurpleLight" href={`/dashboard/list/teacher?classId=${2}`}>
               Student&apos;s Teachers
             </Link>
-            <Link className="p-3 rounded-md bg-YellowLight" href="/">
+            <Link className="p-3 rounded-md bg-YellowLight" href={`/dashboard/list/exams?classId=${2}`}>
               Student&apos;s Exams
             </Link>
-            <Link className="p-3 rounded-md bg-pink-50" href="/">
+            <Link className="p-3 rounded-md bg-pink-50" href={`/dashboard/list/results?studentId=${"student2"}`}>
               Student&apos;s Results
             </Link>
-            <Link className="p-3 rounded-md bg-SkyLight" href="/">
+            <Link className="p-3 rounded-md bg-SkyLight" href={`/dashboard/list/assignments?classId=${2}`}>
               Student&apos;s Assignments
             </Link>
           </div>
