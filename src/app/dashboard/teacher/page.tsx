@@ -1,4 +1,3 @@
-"use client"
 import Announcements from "@/components/Announcement"
 import BigCalendar from "@/components/BigCalendar"
 import "react-big-calendar/lib/css/react-big-calendar.css"

@@ -2,14 +2,17 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, announcementsData } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { auth } from "@clerk/nextjs/server";
 import { Announcement, Class, Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-type AnnouncementList = Announcement & {class: Class};
+type AnnouncementList = Announcement & { class: Class };
+
+const { userId, sessionClaims } =  auth();
+const role = (sessionClaims?.metadata as { role?: string })?.role;
 
 const columns = [
     {
@@ -25,10 +28,10 @@ const columns = [
         accessor: "date",
         className: "hidden md:table-cell",
     },
-    {
+    ...(role === "admin" ? [{
         header: "Actions",
         accessor: "action",
-    },
+    }] : []),
 ];
 
 const renderRow = (item: AnnouncementList) => (
@@ -55,39 +58,42 @@ const renderRow = (item: AnnouncementList) => (
 );
 
 
-const AnnouncementsListpage = async ({searchParams, } : {searchParams : {[key: string ]: string } | undefined; }) => {
+const AnnouncementsListpage = async ({ searchParams, }: { searchParams: { [key: string]: string } | undefined; }) => {
 
-    const { page, ...queryParams} = searchParams;
+   
+    const currentUserId = userId;
+
+    const { page, ...queryParams } = searchParams;
 
     const p = page ? parseInt(page) : 1;
 
-   const query: Prisma.AnnouncementWhereInput = {};
+    const query: Prisma.AnnouncementWhereInput = {};
 
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "search":
-            query.title = { contains: value, mode: "insensitive" };
-            break;
-          default:
-            break;
+    if (queryParams) {
+        for (const [key, value] of Object.entries(queryParams)) {
+            if (value !== undefined) {
+                switch (key) {
+                    case "search":
+                        query.title = { contains: value, mode: "insensitive" };
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
-      }
     }
-  }
 
     const [data, count] = await prisma.$transaction([
         prisma.announcement.findMany({
-        where: query,
-          include: {
-            class: true,
-          },
-          take: ITEM_PER_PAGE,
-          skip: ITEM_PER_PAGE * (p - 1),
+            where: query,
+            include: {
+                class: true,
+            },
+            take: ITEM_PER_PAGE,
+            skip: ITEM_PER_PAGE * (p - 1),
         }),
         prisma.announcement.count({ where: query }),
-      ]);
+    ]);
 
 
 
@@ -107,7 +113,7 @@ const AnnouncementsListpage = async ({searchParams, } : {searchParams : {[key: s
                             <Image src="/sort.png" alt="" width={14} height={14} />
                         </button>
                         {role === "admin" && (
-                           <FormModal table="announcement" type="create" />
+                            <FormModal table="announcement" type="create" />
                         )}
                     </div>
                 </div>

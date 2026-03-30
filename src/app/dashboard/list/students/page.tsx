@@ -2,15 +2,20 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, studentsData } from "@/lib/data";
 import { Class, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { auth } from "@clerk/nextjs/server";
 
 type StudentList = Student & { class: Class };
   
+const StudentsListpage = async ({searchParams, } : {searchParams : {[key: string ]: string } | undefined; }) => {
+
+  const { userId, sessionClaims } = await auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+
   const columns = [
     {
       header: "Info",
@@ -36,10 +41,10 @@ type StudentList = Student & { class: Class };
       accessor: "address",
       className: "hidden lg:table-cell",
     },
-    {
+    ...(role === "admin" ? [{
       header: "Actions",
       accessor: "action",
-    },
+  }] : []),
   ];
 
 
@@ -73,10 +78,6 @@ type StudentList = Student & { class: Class };
                     </button>
                 </Link>
                 {role === "admin" && (
-                    // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Purple">
-                    //   <Image src="/delete.png" alt="" width={16} height={16} />
-                    // </button>
-
                     <FormModal table="student" type="delete" id={item.id}/>
                 )}
             </div>
@@ -84,8 +85,6 @@ type StudentList = Student & { class: Class };
     </tr>
 );
 
-
-const StudentsListpage = async ({searchParams, } : {searchParams : {[key: string ]: string } | undefined; }) => {
 
     const { page, ...queryParams} = searchParams;
 
