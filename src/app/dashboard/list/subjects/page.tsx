@@ -1,4 +1,4 @@
-import FormModal from "@/components/FormModal";
+import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -50,8 +50,9 @@ const SubjectsListpage = async ({
   
                   {role === "admin" && (
                       <>
-                          <FormModal table="subject" type="update" data={item} />
-                          <FormModal table="subject" type="delete" id={item.id} />
+                          
+                          <FormContainer table="subject" type="update" data={item} />
+                          <FormContainer table="subject" type="delete" id={item.id} />
                       </>
                   )}
   

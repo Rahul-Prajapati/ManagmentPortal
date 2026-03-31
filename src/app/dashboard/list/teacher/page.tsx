@@ -1,4 +1,3 @@
-import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -8,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { auth } from "@clerk/nextjs/server";
+import FormContainer from "@/components/FormContainer";
 
 type TeacherList = Teacher & {subjects: Subject[]} & {classes : Class[]}
 
@@ -84,7 +84,7 @@ const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string
                         </button>
                     </Link>
                     {role === "admin" && (
-                        <FormModal table="teacher" type="delete" id={item.id}/>
+                        <FormContainer table="teacher" type="delete" id={item.id}/>
                     )}
                 </div>
             </td>
