@@ -25,7 +25,7 @@ model Student {
   email       String?       @unique
   phone       String?       @unique
   address     String
-  img         String
+  img         String?
   bloodType   String
   sex         UserSex
   parentId    String
@@ -48,7 +48,7 @@ model Teacher {
   email       String?       @unique
   phone       String?       @unique
   address     String
-  img         String
+  img         String?
   bloodType   String
   sex         UserSex
   subjects    Subject[]

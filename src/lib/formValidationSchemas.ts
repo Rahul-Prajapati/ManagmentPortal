@@ -67,7 +67,7 @@ export const studentSchema = z.object({
     .or(z.literal("")),
   phone: z.string().optional(),
   address: z.string(),
-  img: z.string(),
+  img: z.string().optional(),
   bloodType: z.string().min(1, { message: "Blood Type is required!" }),
   birthday: z.coerce.date({ message: "Birthday is required!" }),
   sex: z.enum(["MALE", "FEMALE"], { message: "Sex is required!" }),

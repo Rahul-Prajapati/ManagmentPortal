@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useFormState } from "react-dom";
 import { FormContainerProps } from "./FormContainer";
-import ClassForm from "./forms/ClassForm";
+
 
 
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
@@ -23,6 +23,12 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
     loading: () => <h1>Loading...</h1>,
 });
 const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
+    loading: () => <h1>Loading...</h1>,
+});
+const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+    loading: () => <h1>Loading...</h1>,
+});
+const ExamForm = dynamic(() => import("./forms/ExamForm"), {
     loading: () => <h1>Loading...</h1>,
 });
 
@@ -49,6 +55,7 @@ const forms: {
     student: (type, data, setOpen, relatedData) => <StudentForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />,
     subject: (type, data, setOpen, relatedData) => <SubjectForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />,
     class: (type, data, setOpen, relatedData) => <ClassForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />,
+    exam: (type, data, setOpen, relatedData) => <ExamForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />,
 };
 
 const FormModal = ({

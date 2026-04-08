@@ -151,7 +151,7 @@ const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string
                         </button>
                         {role === "admin" && (
 
-                            <FormModal table="teacher" type="create" />
+                            <FormContainer table="teacher" type="create" />
                             
                         )}
                     </div>
