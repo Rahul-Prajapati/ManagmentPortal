@@ -50,3 +50,11 @@ Added Fetching of data in dynamic search and fetch real time data on the dashboa
 
 Created container components to seprate fetch calls from the Client Server Components and boost the application page load.
 
+Fetch Student, teacher, Subjects, Parents, Exams etc all the menu/list items to the FE.
+
+Added roles to the Clerk Dashboard, fetch data and implemented the Authentication and authorization.
+
+Protected Routes with as per user role.
+
+
+
