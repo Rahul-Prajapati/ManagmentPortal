@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 
 const TableSearch = () => {
 
+  console.log("tablesearch rerender");
+
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

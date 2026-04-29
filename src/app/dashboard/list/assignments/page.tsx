@@ -1,9 +1,12 @@
+import DataStateWrapper from "@/components/DataStateWrapper";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { getEmptyState } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { Assignment, Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
@@ -80,6 +83,9 @@ const AssignmentsListpage = async ({
     );
 
     const { page, ...queryParams } = searchParams;
+
+    const sort = searchParams.sort || "name";
+    const order = searchParams.order === "desc" ? "desc" : "asc";
 
     const p = page ? parseInt(page) : 1;
 
@@ -164,6 +170,14 @@ const AssignmentsListpage = async ({
         prisma.assignment.count({ where: query }),
     ]);
 
+    const resource = "assignment";
+    const searchText = queryParams.search;
+
+    const emptyMessage = getEmptyState({
+        resource, 
+        searchText,
+    })
+
 
 
     return (
@@ -177,19 +191,23 @@ const AssignmentsListpage = async ({
                         <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
                             <Image src="/filter.png" alt="" width={14} height={14} />
                         </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-                            <Image src="/sort.png" alt="" width={14} height={14} />
-                        </button>
+                        
+                        <TableSort/>
+                        
                         {role === "admin" || role === "teacher" &&
                             <FormModal table="assignment" type="create" />
                         }
                     </div>
                 </div>
             </div>
-            {/* LIST */}
-            <Table columns={columns} renderRow={renderRow} data={data} />
-            {/* PAGINATION */}
-            <Pagination page={p} count={count} />
+            
+            <DataStateWrapper data={data} emptyMessage={emptyMessage}>
+                <>
+                    <Table columns={columns} renderRow={renderRow} data={data} />
+                    <Pagination page={p} count={count} />
+                </>
+            </DataStateWrapper>
+
         </div>
     )
 }

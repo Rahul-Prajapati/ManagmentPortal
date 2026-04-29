@@ -39,3 +39,32 @@ export const adjustScheduleToCurrentWeek = (
        };
      });
    };
+
+// export const RESOURCE_MAP: Record<string, string> = {
+//   "/dashboard/list/teachers": "teachers",
+//   "/dashboard/list/students": "students",
+//   "/dashboard/list/parents": "parents",
+//   "/dashboard/list/subjects": "subjects",
+//   "/dashboard/list/classes": "classes",
+//   "/dashboard/list/exams": "exams",
+//   "/dashboard/list/assignments": "assignments",
+//   "/dashboard/list/results": "results",
+//   "/dashboard/list/attendance": "attendance",
+//   "/dashboard/list/events": "events",
+//   "/dashboard/list/announcements": "announcements",
+// };
+
+export type GetEmptyStateParams = {
+  resource: string;
+  searchText?: string | null;
+};
+
+export function getEmptyState({ resource, searchText }: GetEmptyStateParams) {
+  
+  const message = searchText
+    ? `No results found for "${searchText}"`
+    : `No ${resource} found`;
+
+  return message;
+}
+

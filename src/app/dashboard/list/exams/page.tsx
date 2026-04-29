@@ -1,9 +1,12 @@
+import DataStateWrapper from "@/components/DataStateWrapper";
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { getEmptyState } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { Class, Exam, Lesson, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
@@ -24,7 +27,7 @@ const ExamsListpage = async ({
     searchParams: { [key: string]: string | undefined };
 }) => {
 
-    const { userId, sessionClaims } = auth();
+    const { userId, sessionClaims } = await auth();
     const role = (sessionClaims?.metadata as { role?: string })?.role;
     const currentUserId = userId;
 
@@ -52,22 +55,22 @@ const ExamsListpage = async ({
             accessor: "action",
         }] : []),
     ];
-    
-    
+
+
     const renderRow = (item: ExamList) => (
         <tr
             key={item.id}
             className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
         >
             <td className="flex items-center gap-4 p-4">
-                {item.lesson.subject.name}
+                {item.lesson?.subject?.name ?? "-"}
             </td>
-            <td className="hidden md:table-cell">{item.lesson.class.name}</td>
-            <td className="hidden md:table-cell">{item.lesson.teacher.name}</td>
-            <td className="hidden md:table-cell">{new Intl.DateTimeFormat("en-IN").format(item.startTime)}</td>
+            <td className="hidden md:table-cell">{item.lesson?.class?.name ?? "-"}</td>
+            <td className="hidden md:table-cell">{item.lesson?.teacher?.name ?? "-"}</td>
+            <td className="hidden md:table-cell">{item.startTime ? new Intl.DateTimeFormat("en-IN").format(item.startTime) : "-"}</td>
             <td>
                 <div className="flex items-center gap-2">
-                    {role === "admin" || role === "teacher" && (
+                    {(role === "admin" || role === "teacher") && (
                         <>
                             <FormContainer table="exam" type="update" data={item} />
                             <FormContainer table="exam" type="delete" id={item.id} />
@@ -80,6 +83,9 @@ const ExamsListpage = async ({
 
 
     const { page, ...queryParams } = searchParams;
+
+    const sort = searchParams.sort || "name";
+    const order = searchParams.order === "desc" ? "desc" : "asc";
 
     const p = page ? parseInt(page) : 1;
 
@@ -96,9 +102,9 @@ const ExamsListpage = async ({
                         break;
                     case "teacherId":
                         query.lesson.teacherId = value;
-                        query.lesson = {
-                            teacherId: value
-                        };
+                        // query.lesson = {
+                        //     teacherId: value
+                        // };
                         break;
                     case "search":
                         query.lesson.subject = {
@@ -161,6 +167,15 @@ const ExamsListpage = async ({
         prisma.exam.count({ where: query }),
     ]);
 
+    const resource = "exams";
+    const searchText = queryParams.search;
+
+    const emptyMessage = getEmptyState({
+        resource, 
+        searchText,
+    })
+
+
 
 
     return (
@@ -174,9 +189,8 @@ const ExamsListpage = async ({
                         <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
                             <Image src="/filter.png" alt="" width={14} height={14} />
                         </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-                            <Image src="/sort.png" alt="" width={14} height={14} />
-                        </button>
+                        
+                        <TableSort />
                         {(role === "admin" || role === "teacher") && (
 
                             <FormContainer table="exam" type="create" />
@@ -185,10 +199,14 @@ const ExamsListpage = async ({
                     </div>
                 </div>
             </div>
-            {/* LIST */}
-            <Table columns={columns} renderRow={renderRow} data={data} />
-            {/* PAGINATION */}
-            <Pagination page={p} count={count} />
+
+            <DataStateWrapper data={data} emptyMessage={emptyMessage}>
+                <>
+                    <Table columns={columns} renderRow={renderRow} data={data} />
+                    <Pagination page={p} count={count} />
+                </>
+            </DataStateWrapper>
+
         </div>
     )
 }

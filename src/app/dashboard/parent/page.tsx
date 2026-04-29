@@ -1,5 +1,5 @@
 "use client"
-import Announcements from "@/components/Announcement"
+import Announcements from "@/components/Announcements"
 import BigCalendar from "@/components/BigCalendar"
 import BigCalendarContainer from "@/components/BigCalendarContainer"
 import prisma from "@/lib/prisma"

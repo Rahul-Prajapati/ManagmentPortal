@@ -1,9 +1,12 @@
+import DataStateWrapper from "@/components/DataStateWrapper";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { getEmptyState } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import Image from "next/image";
@@ -30,7 +33,7 @@ const ResultsListpage = async ({
     searchParams: { [key: string]: string | undefined };
 }) => {
 
-    const { userId, sessionClaims } = auth();
+    const { userId, sessionClaims } = await auth();
     const role = (sessionClaims?.metadata as { role?: string })?.role;
     const currentUserId = userId;
 
@@ -100,6 +103,9 @@ const ResultsListpage = async ({
 
 
     const { page, ...queryParams } = searchParams;
+
+    const sort = searchParams.sort || "name";
+    const order = searchParams.order === "desc" ? "desc" : "asc";
 
     const p = page ? parseInt(page) : 1;
 
@@ -204,6 +210,15 @@ const ResultsListpage = async ({
       });
 
 
+      const resource = "results";
+      const searchText = queryParams.search;
+  
+      const emptyMessage = getEmptyState({
+          resource, 
+          searchText,
+      })
+
+
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             {/* TOP */}
@@ -215,9 +230,8 @@ const ResultsListpage = async ({
                         <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
                             <Image src="/filter.png" alt="" width={14} height={14} />
                         </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-                            <Image src="/sort.png" alt="" width={14} height={14} />
-                        </button>
+                        
+                        <TableSort/>
                         
                         {role === "admin" || role === "teacher" && 
                             <FormModal table="result" type="create" />
@@ -225,10 +239,14 @@ const ResultsListpage = async ({
                     </div>
                 </div>
             </div>
-            {/* LIST */}
-            <Table columns={columns} renderRow={renderRow} data={data} />
-            {/* PAGINATION */}
-            <Pagination page={p} count={count} />
+            
+            <DataStateWrapper data={data} emptyMessage={emptyMessage}>
+                <>
+                    <Table columns={columns} renderRow={renderRow} data={data} />
+                    <Pagination page={p} count={count} />
+                </>
+            </DataStateWrapper>
+
         </div>
     )
 }

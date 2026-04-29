@@ -8,10 +8,17 @@ import Link from "next/link";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { auth } from "@clerk/nextjs/server";
 import FormContainer from "@/components/FormContainer";
+import DataStateWrapper from "@/components/DataStateWrapper";
+import { getEmptyState } from "@/lib/utils";
+import TableSort from "@/components/TableSort";
 
 type TeacherList = Teacher & {subjects: Subject[]} & {classes : Class[]}
 
-const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string ]: string } | undefined; }) => {
+const TeachersListpage = async ({
+        searchParams, 
+    } : {
+        searchParams : {[key: string ]: string | undefined };
+    }) => {
 
     const { sessionClaims } = await auth();
     const role = (sessionClaims?.metadata as { role?: string })?.role;
@@ -60,7 +67,7 @@ const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string
         >
             <td className="flex items-center gap-4 p-4">
                 <Image
-                    src={item.img}
+                    src={item.img || "/noAvatar.png"}
                     alt=""
                     width={40}
                     height={40}
@@ -93,6 +100,9 @@ const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string
     
 
     const { page, ...queryParams} = searchParams;
+
+    const sort = searchParams.sort || "name";
+    const order = searchParams.order === "desc" ? "desc" : "asc";
 
     const p = page ? parseInt(page) : 1;
 
@@ -132,6 +142,14 @@ const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string
         prisma.teacher.count({ where: query }),
       ]);
 
+      const resource = "teacher";
+      const searchText = queryParams.search;
+  
+      const emptyMessage = getEmptyState({
+          resource, 
+          searchText,
+      })
+
     
 
     
@@ -146,9 +164,9 @@ const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string
                         <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
                             <Image src="/filter.png" alt="" width={14} height={14} />
                         </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-                            <Image src="/sort.png" alt="" width={14} height={14} />
-                        </button>
+                        
+                        <TableSort />
+                        
                         {role === "admin" && (
 
                             <FormContainer table="teacher" type="create" />
@@ -157,10 +175,14 @@ const TeachersListpage = async ({searchParams, } : {searchParams : {[key: string
                     </div>
                 </div>
             </div>
-            {/* LIST */}
-            <Table columns={columns} renderRow={renderRow} data={data} />
-            {/* PAGINATION */}
-            <Pagination page={p} count={count} />
+            
+            <DataStateWrapper data={data} emptyMessage={emptyMessage}>
+                <>
+                    <Table columns={columns} renderRow={renderRow} data={data} />
+                    <Pagination page={p} count={count} />
+                </>
+            </DataStateWrapper>
+
         </div>
     )
 }

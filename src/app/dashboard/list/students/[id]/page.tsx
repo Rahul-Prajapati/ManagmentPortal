@@ -1,4 +1,4 @@
-import Announcements from "@/components/Announcement";
+import Announcements from "@/components/Announcements";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
 import FormContainer from "@/components/FormContainer";
 import Performance from "@/components/Performance";
@@ -19,7 +19,7 @@ const SingleStudentPage = async ({
 }) => {
 
 
-  const { sessionClaims } = auth();
+  const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   const student:

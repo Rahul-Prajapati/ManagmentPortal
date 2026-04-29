@@ -1,4 +1,4 @@
-import Announcements from "@/components/Announcement"
+import Announcements from "@/components/Announcements"
 import BigCalendar from "@/components/BigCalendar"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 

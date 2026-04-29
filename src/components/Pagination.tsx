@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 
 const Pagination = ({page, count} : {page: number; count: number}) => {
 
+  console.log("pagination");
+
   const router = useRouter();
 
   const hasPrev = ITEM_PER_PAGE * (page - 1) > 0;

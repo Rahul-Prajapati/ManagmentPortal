@@ -1,5 +1,4 @@
-"use client"
-import Announcements from "@/components/Announcement"
+import Announcements from "@/components/Announcements"
 import BigCalendarContainer from "@/components/BigCalendarContainer"
 import EventCalendar from "@/components/EventCalendar"
 import prisma from "@/lib/prisma"
@@ -7,14 +6,13 @@ import { auth } from "@clerk/nextjs/server"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
 const StudentPage =async () => {
-    const { userId } = auth();
+    const { userId } = await auth();
   
     const classItem = await prisma.class.findMany({
       where: {
         students: { some: { id: userId! } },
       },
     });
-
 
     return (
         <div className="p-4 flex gap-4 flex-col xl:flex-row">

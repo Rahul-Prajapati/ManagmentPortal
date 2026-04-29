@@ -1,10 +1,13 @@
+import DataStateWrapper from "@/components/DataStateWrapper";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableSort from "@/components/TableSort";
 import { role, eventsData } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { getEmptyState } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { Class, Event, Prisma } from "@prisma/client";
 import Image from "next/image";
@@ -16,9 +19,9 @@ type EventList = Event & { class: Class };
 
 
 
-const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]: string } | undefined; }) => {
+const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]: string | undefined };}) => {
 
-    const { userId, sessionClaims } = auth();
+    const { userId, sessionClaims } = await auth();
     const role = (sessionClaims?.metadata as { role?: string })?.role;
     const currentUserId = userId;
 
@@ -92,6 +95,9 @@ const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]
 
     const { page, ...queryParams } = searchParams;
 
+    const sort = searchParams.sort || "name";
+    const order = searchParams.order === "desc" ? "desc" : "asc";
+
     const p = page ? parseInt(page) : 1;
 
     const query: Prisma.EventWhereInput = {};
@@ -138,6 +144,14 @@ const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]
         prisma.event.count({ where: query }),
     ]);
 
+    const resource = "events";
+    const searchText = queryParams.search;
+
+    const emptyMessage = getEmptyState({
+        resource, 
+        searchText,
+    })
+
 
 
 
@@ -152,9 +166,9 @@ const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]
                         <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
                             <Image src="/filter.png" alt="" width={14} height={14} />
                         </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-                            <Image src="/sort.png" alt="" width={14} height={14} />
-                        </button>
+
+                       <TableSort/>
+
                         {role === "admin" && (
 
                             <FormModal table="event" type="create" />
@@ -163,10 +177,14 @@ const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]
                     </div>
                 </div>
             </div>
-            {/* LIST */}
-            <Table columns={columns} renderRow={renderRow} data={data} />
-            {/* PAGINATION */}
-            <Pagination page={p} count={count} />
+            
+            <DataStateWrapper data={data} emptyMessage={emptyMessage}>
+                <>
+                    <Table columns={columns} renderRow={renderRow} data={data} />
+                    <Pagination page={p} count={count} />
+                </>
+            </DataStateWrapper>
+
         </div>
     )
 }
