@@ -1,6 +1,5 @@
 import DataStateWrapper from "@/components/DataStateWrapper";
 import FormContainer from "@/components/FormContainer";
-import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -109,6 +108,9 @@ const ParentsListpage = async ({
         where: query,
           include: {
             students: true,
+          },
+          orderBy: {
+            [sort]: order,
           },
           take: ITEM_PER_PAGE,
           skip: ITEM_PER_PAGE * (p - 1),

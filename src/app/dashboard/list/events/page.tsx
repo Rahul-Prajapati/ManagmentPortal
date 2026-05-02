@@ -1,4 +1,5 @@
 import DataStateWrapper from "@/components/DataStateWrapper";
+import FormContainer from "@/components/FormContainer";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
@@ -84,8 +85,8 @@ const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]
                 <div className="flex items-center gap-2">
                     {role === "admin" && (
                         <>
-                            <FormModal table="event" type="update" data={item} />
-                            <FormModal table="event" type="delete" id={item.id} />
+                            <FormContainer table="event" type="update" data={item} />
+                            <FormContainer table="event" type="delete" id={item.id} />
                         </>
                     )}
                 </div>
@@ -138,6 +139,9 @@ const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]
             include: {
                 class: true,
             },
+            orderBy: {
+                [sort]: order,
+            },
             take: ITEM_PER_PAGE,
             skip: ITEM_PER_PAGE * (p - 1),
         }),
@@ -171,7 +175,7 @@ const EventsListpage = async ({ searchParams, }: { searchParams: { [key: string]
 
                         {role === "admin" && (
 
-                            <FormModal table="event" type="create" />
+                            <FormContainer table="event" type="create" />
 
                         )}
                     </div>

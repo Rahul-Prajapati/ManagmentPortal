@@ -77,6 +77,7 @@ const FormModal = ({
 
         const [state, formAction] = useFormState(deleteActionMap[table], {
             success: false,
+            
             error: false,
           });
       

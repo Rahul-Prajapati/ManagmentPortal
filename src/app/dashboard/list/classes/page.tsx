@@ -1,6 +1,5 @@
 import DataStateWrapper from "@/components/DataStateWrapper";
 import FormContainer from "@/components/FormContainer";
-import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -115,6 +114,9 @@ const renderRow = (item: ClassList) => (
           include: {
             supervisor: true,
           },
+          orderBy: {
+            [sort]: order,
+          },
           take: ITEM_PER_PAGE,
           skip: ITEM_PER_PAGE * (p - 1),
         }),
@@ -146,7 +148,7 @@ const renderRow = (item: ClassList) => (
                         
                         {role === "admin" && (
                             
-                            <FormModal table="class" type="create" />
+                            <FormContainer table="class" type="create" />
 
                         )}
                     </div>

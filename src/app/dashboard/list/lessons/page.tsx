@@ -1,5 +1,5 @@
 import DataStateWrapper from "@/components/DataStateWrapper";
-import FormModal from "@/components/FormModal";
+import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -61,8 +61,8 @@ const LessonsListpage = async ({
               <div className="flex items-center gap-2">
                   {role === "admin" && (
                       <>
-                          <FormModal table="lesson" type="update" data={item} />
-                          <FormModal table="lesson" type="delete" id={item.id} />
+                          <FormContainer table="lesson" type="update" data={item} />
+                          <FormContainer table="lesson" type="delete" id={item.id} />
                       </>
                   )}
               </div>
@@ -111,6 +111,9 @@ const LessonsListpage = async ({
             class: {select: {name:true}},
             teacher: {select: {name:true, surname:true}},
           },
+          orderBy: {
+            [sort]: order,
+          },
           take: ITEM_PER_PAGE,
           skip: ITEM_PER_PAGE * (p - 1),
         }),
@@ -145,7 +148,7 @@ const LessonsListpage = async ({
                         
                         {role === "admin" && (
                        
-                            <FormModal table="lesson" type="create" />
+                            <FormContainer table="lesson" type="create" />
 
                         )}
                     </div>

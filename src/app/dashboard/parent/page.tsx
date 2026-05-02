@@ -1,13 +1,12 @@
 "use client"
 import Announcements from "@/components/Announcements"
-import BigCalendar from "@/components/BigCalendar"
 import BigCalendarContainer from "@/components/BigCalendarContainer"
 import prisma from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
 const ParentPage = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
   const currentUserId = userId;
 
   const students = await prisma.student.findMany({

@@ -136,6 +136,9 @@ const TeachersListpage = async ({
             subjects: true,
             classes: true,
           },
+          orderBy: {
+            [sort]: order,
+          },
           take: ITEM_PER_PAGE,
           skip: ITEM_PER_PAGE * (p - 1),
         }),

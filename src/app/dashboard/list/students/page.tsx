@@ -1,4 +1,3 @@
-import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -11,6 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 import DataStateWrapper from "@/components/DataStateWrapper";
 import { getEmptyState } from "@/lib/utils";
 import TableSort from "@/components/TableSort";
+import FormContainer from "@/components/FormContainer";
 
 type StudentList = Student & { class: Class };
 
@@ -85,7 +85,7 @@ const StudentsListpage = async ({
             </button>
           </Link>
           {role === "admin" && (
-            <FormModal table="student" type="delete" id={item.id} />
+            <FormContainer table="student" type="delete" id={item.id} />
           )}
         </div>
       </td>
@@ -164,19 +164,12 @@ const StudentsListpage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
               <Image src="/filter.png" alt="" width={14} height={14} />
             </button>
-            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-                            <Image src="/sort.png" alt="" width={14} height={14} />
-                        </button> */}
 
             <TableSort />
 
-
             {role === "admin" && (
-              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-              //   <Image src="/plus.png" alt="" width={14} height={14} />
-              // </button>
 
-              <FormModal table="student" type="create" />
+              <FormContainer table="student" type="create" />
 
             )}
           </div>

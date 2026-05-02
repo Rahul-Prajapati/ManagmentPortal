@@ -1,5 +1,5 @@
 import DataStateWrapper from "@/components/DataStateWrapper";
-import FormModal from "@/components/FormModal";
+import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -10,7 +10,6 @@ import { getEmptyState } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { Assignment, Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 
 type AssignmentList = Assignment & {
     lesson: {
@@ -73,8 +72,8 @@ const AssignmentsListpage = async ({
                 <div className="flex items-center gap-2">
                     {role === "admin" || role === "teacher" && (
                         <>
-                            <FormModal table="assignment" type="update" data={item} />
-                            <FormModal table="assignment" type="delete" id={item.id} />
+                            <FormContainer table="assignment" type="update" data={item} />
+                            <FormContainer table="assignment" type="delete" id={item.id} />
                         </>
                     )}
                 </div>
@@ -164,6 +163,9 @@ const AssignmentsListpage = async ({
                     }
                 }
             },
+            orderBy: {
+                [sort]: order,
+            },
             take: ITEM_PER_PAGE,
             skip: ITEM_PER_PAGE * (p - 1),
         }),
@@ -195,7 +197,7 @@ const AssignmentsListpage = async ({
                         <TableSort/>
                         
                         {role === "admin" || role === "teacher" &&
-                            <FormModal table="assignment" type="create" />
+                            <FormContainer table="assignment" type="create" />
                         }
                     </div>
                 </div>
